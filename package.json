@@ -1,0 +1,20 @@
+{
+  "name": "undock",
+  "version": "0.0.0",
+  "bin": {
+    "undock": "./attach.sh"
+  },
+  "scripts": {
+    "postinstall": "./install.sh"
+  },
+  "keywords": [
+    "dind",
+    "docker",
+    "docker-compose",
+    "Dockerfile",
+    "Docker-in-Docker"
+  ],
+  "author": "Alvaro Cabrera <yo@soypache.co>",
+  "license": "MIT",
+  "description": "Dind for idiots."
+}
