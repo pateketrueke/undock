@@ -1,11 +1,13 @@
 #!/bin/bash
 
-BUILD_TARGET="${1:-develop}"
-PROJECT_NAME="${2:-$(basename $PWD)}"
-
 [[ $@ =~ ^(.* )?(-- )(.+)$ ]];
 
 EXEC="${BASH_REMATCH[3]:-/bin/bash}"
+
+[[ "${BASH_REMATCH[1]}" =~ ^([^ ]+ )(.+ )?$ ]];
+
+BUILD_TARGET="${BASH_REMATCH[1]:-develop}"
+PROJECT_NAME="${BASH_REMATCH[2]:-$(basename $PWD)}"
 
 DOCKER_FILE="$HOME/.docker/Dockerfile"
 
