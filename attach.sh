@@ -1,10 +1,17 @@
 #!/bin/bash
 
+# extract `-- command`
 [[ $@ =~ ^(.* )?(-- )(.+)$ ]];
 
+ARGV="${BASH_REMATCH[1]}"
 EXEC="${BASH_REMATCH[3]:-/bin/bash}"
 
-[[ "${BASH_REMATCH[1]}" =~ ^([^ ]+ )(.+ )?$ ]];
+if [[ -z "$ARGV" ]] && [[ "${BASH_REMATCH[2]}" != "-- " ]]; then
+  ARGV="$@"
+fi
+
+# extract `target project`
+[[ $ARGV =~ ^(.* )?(.+)$ ]];
 
 BUILD_TARGET="${BASH_REMATCH[1]:-develop}"
 PROJECT_NAME="${BASH_REMATCH[2]:-$(basename $PWD)}"
