@@ -2,7 +2,7 @@
 
 Useful single-shot command for Docker-in-Docker containers.
 
-It will run `$HOME/.docker/Dockerfile` (or `$PWD/Dockerfile` if any) with some folders mounted:
+It will run `$HOME/.docker/Dockerfile` with some folders mounted:
 
 - `/var/run/docker.sock`
 - `$HOME/.gitconfig`

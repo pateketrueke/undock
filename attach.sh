@@ -11,10 +11,6 @@ PROJECT_NAME="${BASH_REMATCH[2]:-$(basename $PWD)}"
 
 DOCKER_FILE="$HOME/.docker/Dockerfile"
 
-if [[ -f "$PWD/Dockerfile" ]]; then
-  DOCKER_FILE="$PWD/Dockerfile"
-fi
-
 SOCKET="-v /var/run/docker.sock:/var/run/docker.sock"
 GITCONFIG="-v $HOME/.gitconfig:/home/dev/.gitconfig"
 SSHDIR="-v $HOME/.ssh:/home/dev/.ssh"
