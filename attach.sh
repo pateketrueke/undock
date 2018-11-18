@@ -23,5 +23,5 @@ GITCONFIG="-v $HOME/.gitconfig:/home/dev/.gitconfig"
 SSHDIR="-v $HOME/.ssh:/home/dev/.ssh"
 HOMEDIR="-v $PWD:/usr/src/dev"
 
-echo docker build --target $BUILD_TARGET -t $PROJECT_NAME -f $DOCKER_FILE .
-echo docker run -it --privileged $SOCKET $GITCONFIG $SSHDIR $HOMEDIR $PROJECT_NAME $EXEC
+docker build --target $BUILD_TARGET -t $PROJECT_NAME -f $DOCKER_FILE .
+docker run -it --privileged $SOCKET $GITCONFIG $SSHDIR $HOMEDIR $PROJECT_NAME $EXEC
