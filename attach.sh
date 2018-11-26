@@ -2,8 +2,19 @@
 
 set -eu
 
+ARGV="$@"
+REBUILD="no"
+
+# extract --build
+[[ $ARGV =~ ^(.*)?-(-build|b)( .+)?$ ]];
+
+if [[ ! -z ${BASH_REMATCH[2]:-} ]]; then
+  ARGV="${BASH_REMATCH[1]:-}${BASH_REMATCH[3]:-}"
+  REBUILD="yes"
+fi
+
 # extract `-- command`
-[[ $@ =~ ^(.* )?(-- )(.+)$ ]];
+[[ $ARGV =~ ^(.* )?(-- )(.+)$ ]];
 
 ARGV="${BASH_REMATCH[1]:-}"
 EXEC="${BASH_REMATCH[3]:-/bin/bash}"
@@ -42,5 +53,8 @@ if [[ ! -z "${PORTS:-}" ]]; then
   done
 fi
 
-docker build --target $BUILD_TARGET -t $PROJECT_NAME -f $DOCKER_FILE . \
-  && docker run -it --rm --privileged $EXPOSE $SOCKET $GITCONFIG $SSHDIR $HOMEDIR $PROJECT_NAME $EXEC
+if [[ "$REBUILD" = "yes" ]]; then
+  docker build --target $BUILD_TARGET -t $PROJECT_NAME -f $DOCKER_FILE $PWD
+fi
+
+docker run -it --rm --privileged $EXPOSE $SOCKET $GITCONFIG $SSHDIR $HOMEDIR $PROJECT_NAME $EXEC
