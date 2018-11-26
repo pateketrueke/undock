@@ -12,6 +12,14 @@ if [[ -z "$ARGV" ]] && [[ "${BASH_REMATCH[2]:-}" != '-- ' ]]; then
   ARGV="$@"
 fi
 
+# extract --ports
+[[ $ARGV =~ ^(.*)?-(-ports|p)(=| )(.+)$ ]];
+
+if [[ ! -z "${BASH_REMATCH[4]:-}" ]]; then
+  PORTS="${BASH_REMATCH[4]:-}"
+  ARGV="${BASH_REMATCH[1]:-}"
+fi
+
 # extract `target project`
 [[ $ARGV =~ ^([^ ]*)( (.*))?$ ]];
 
@@ -25,5 +33,14 @@ GITCONFIG="-v $HOME/.gitconfig:/home/dev/.gitconfig"
 SSHDIR="-v $HOME/.ssh:/home/dev/.ssh"
 HOMEDIR="-v $PWD:/usr/src/dev"
 
+EXPOSE=""
+PORTS=( $(echo "${PORTS:-}" | tr ',' ' ') )
+
+if [[ ! -z "${PORTS:-}" ]]; then
+  for PORT in "${PORTS[@]}"; do
+    EXPOSE+="-p $PORT "
+  done
+fi
+
 docker build --target $BUILD_TARGET -t $PROJECT_NAME -f $DOCKER_FILE . \
-  && docker run -it --privileged $SOCKET $GITCONFIG $SSHDIR $HOMEDIR $PROJECT_NAME $EXEC
+  && docker run -it --rm --privileged $EXPOSE $SOCKET $GITCONFIG $SSHDIR $HOMEDIR $PROJECT_NAME $EXEC
