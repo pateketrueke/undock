@@ -14,12 +14,12 @@ if [[ ! -z ${BASH_REMATCH[2]:-} ]]; then
 fi
 
 # extract `-- command`
-[[ $ARGV =~ ^(.* )?(-- )(.+)$ ]];
+[[ $ARGV =~ ^(.*)?( -- .+)?$ ]];
 
 ARGV="${BASH_REMATCH[1]:-}"
 EXEC="${BASH_REMATCH[3]:-/bin/bash}"
 
-if [[ -z "$ARGV" ]] && [[ "${BASH_REMATCH[2]:-}" != '-- ' ]]; then
+if [[ "${BASH_REMATCH[2]:-}" =~ ^-- ]]; then
   ARGV="$@"
 fi
 
