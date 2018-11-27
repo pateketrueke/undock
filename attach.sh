@@ -90,8 +90,9 @@ if ! docker network ls | grep $NETWORK_NAME > /dev/null; then
 fi
 
 if ! docker network inspect $NETWORK_NAME | grep "\"Name\": \"$BUILD_NAME\"" > /dev/null; then
-  uuid=$(docker run -d -it --rm --privileged $ENV $NAME $EXPOSE $HOSTNAME $SOCKET $GITCONFIG $SSHDIR $HOMEDIR $HISTORY $PROJECT_NAME $CMD)
-
+  docker run -d -it --rm --privileged \
+    $ENV $NAME $EXPOSE $HOSTNAME $SOCKET $GITCONFIG \
+    $SSHDIR $HOMEDIR $HISTORY $PROJECT_NAME $CMD > /dev/null
   docker network connect $NETWORK_NAME $BUILD_NAME
   docker attach $BUILD_NAME
 else
