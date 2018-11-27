@@ -5,6 +5,7 @@ Useful single-shot command for Docker-in-Docker containers.
 It will run `$HOME/.docker/Dockerfile` with some folders mounted:
 
 - `/var/run/docker.sock`
+- `$HOME/.bash_history`
 - `$HOME/.gitconfig`
 - `$HOME/.ssh`
 
