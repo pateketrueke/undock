@@ -49,13 +49,13 @@ if [[ ! -z "${BASH_REMATCH[4]:-}" ]]; then
   ARGV="${BASH_REMATCH[1]:-}"
 fi
 
-# extract `target project`
-[[ $ARGV =~ ^([^ ]*)( (.*))?$ ]];
+# extract `name target project network`
+[[ $ARGV =~ ^([^ ]*)( ([^ ]*))?( ([^ ]*))?( ([^ ]*))?$ ]];
 
 BUILD_NAME="${BASH_REMATCH[1]:-app}"
-BUILD_TARGET="${BASH_REMATCH[2]:-develop}"
-PROJECT_NAME="${BASH_REMATCH[3]:-$(basename $PWD)}"
-NETWORK_NAME="${PROJECT_NAME}_undock"
+BUILD_TARGET="${BASH_REMATCH[3]:-develop}"
+PROJECT_NAME="${BASH_REMATCH[5]:-$(basename $PWD)}"
+NETWORK_NAME="${PROJECT_NAME}_${BASH_REMATCH[7]:-default}"
 DOCKER_FILE="$HOME/.docker/Dockerfile"
 
 SOCKET="-v /var/run/docker.sock:/var/run/docker.sock"
@@ -79,7 +79,7 @@ if [[ "$REBUILD" = "yes" ]]; then
 fi
 
 if ! docker network ls | grep $NETWORK_NAME > /dev/null; then
-  docker network create -d bridge $NETWORK_NAME
+  docker network create -d bridge $NETWORK_NAME > /dev/null
 fi
 
 if ! docker network inspect $NETWORK_NAME | grep "\"Name\": \"$BUILD_NAME\"" > /dev/null; then
