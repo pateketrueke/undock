@@ -55,7 +55,7 @@ fi
 BUILD_NAME="${BASH_REMATCH[1]:-app}"
 BUILD_TARGET="${BASH_REMATCH[2]:-develop}"
 PROJECT_NAME="${BASH_REMATCH[3]:-$(basename $PWD)}"
-
+NETWORK_NAME="${PROJECT_NAME}_undock"
 DOCKER_FILE="$HOME/.docker/Dockerfile"
 
 SOCKET="-v /var/run/docker.sock:/var/run/docker.sock"
@@ -78,17 +78,17 @@ if [[ "$REBUILD" = "yes" ]]; then
   docker build --target $BUILD_TARGET -t $PROJECT_NAME -f $DOCKER_FILE $PWD
 fi
 
-if ! docker network ls | grep $PROJECT_NAME > /dev/null; then
-  docker network create -d bridge $PROJECT_NAME
+if ! docker network ls | grep $NETWORK_NAME > /dev/null; then
+  docker network create -d bridge $NETWORK_NAME
 fi
 
-if ! docker network inspect $PROJECT_NAME | grep "\"Name\": \"$BUILD_NAME\"" > /dev/null; then
+if ! docker network inspect $NETWORK_NAME | grep "\"Name\": \"$BUILD_NAME\"" > /dev/null; then
   uuid=$(docker run -d -it --rm --privileged $NAME $EXPOSE $SOCKET $GITCONFIG $SSHDIR $HOMEDIR $PROJECT_NAME $CMD)
 
-  docker network connect $PROJECT_NAME $BUILD_NAME
+  docker network connect $NETWORK_NAME $BUILD_NAME
 
   echo "$BUILD_NAME $uuid"
 else
-  docker network disconnect $PROJECT_NAME $BUILD_NAME
+  docker network disconnect $NETWORK_NAME $BUILD_NAME
   docker stop $BUILD_NAME
 fi
