@@ -8,7 +8,7 @@ REBUILD="no"
 if [[ -z "$ARGV" ]] || [[ $ARGV =~ ^--help ]]; then
   echo
   echo "Usage:"
-  echo "  undock [NAME] [TARGET] [OPTIONS] [-- COMMAND]"
+  echo "  undock [NAME] [TARGET] [PROJECT] [NETWORK] [...] [-- COMMAND]"
   echo
   echo "Examples:"
   echo "  undock test"
