@@ -58,6 +58,7 @@ PROJECT_NAME="${BASH_REMATCH[5]:-$(basename $PWD)}"
 NETWORK_NAME="${PROJECT_NAME}_${BASH_REMATCH[7]:-default}"
 DOCKER_FILE="$HOME/.docker/Dockerfile"
 
+HISTORY="-v $HOME/.bash_history:/home/dev/.bash_history"
 SOCKET="-v /var/run/docker.sock:/var/run/docker.sock"
 GITCONFIG="-v $HOME/.gitconfig:/home/dev/.gitconfig"
 SSHDIR="-v $HOME/.ssh:/home/dev/.ssh"
@@ -65,13 +66,19 @@ HOMEDIR="-v $PWD:/usr/src/dev"
 NAME="--name $BUILD_NAME"
 
 EXPOSE="-P"
+HOSTNAME="--hostname $BUILD_NAME"
 PORTS=( $(echo "${PORTS:-}" | tr ',' ' ') )
 CMD="$(echo $EXEC | sed 's/^--//' | sed s/%/$BUILD_NAME/g)"
+ENV=""
 
 if [[ ! -z "${PORTS:-}" ]]; then
   for PORT in "${PORTS[@]}"; do
     EXPOSE+=" -p $PORT"
   done
+fi
+
+if [[ -f "$PWD/.env" ]]; then
+  ENV="--env-file $PWD/.env"
 fi
 
 if [[ "$REBUILD" = "yes" ]]; then
@@ -83,7 +90,7 @@ if ! docker network ls | grep $NETWORK_NAME > /dev/null; then
 fi
 
 if ! docker network inspect $NETWORK_NAME | grep "\"Name\": \"$BUILD_NAME\"" > /dev/null; then
-  uuid=$(docker run -d -it --rm --privileged $NAME $EXPOSE $SOCKET $GITCONFIG $SSHDIR $HOMEDIR $PROJECT_NAME $CMD)
+  uuid=$(docker run -d -it --rm --privileged $ENV $NAME $EXPOSE $HOSTNAME $SOCKET $GITCONFIG $SSHDIR $HOMEDIR $HISTORY $PROJECT_NAME $CMD)
 
   docker network connect $NETWORK_NAME $BUILD_NAME
   docker attach $BUILD_NAME
