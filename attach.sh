@@ -86,8 +86,7 @@ if ! docker network inspect $NETWORK_NAME | grep "\"Name\": \"$BUILD_NAME\"" > /
   uuid=$(docker run -d -it --rm --privileged $NAME $EXPOSE $SOCKET $GITCONFIG $SSHDIR $HOMEDIR $PROJECT_NAME $CMD)
 
   docker network connect $NETWORK_NAME $BUILD_NAME
-
-  echo "$BUILD_NAME $uuid"
+  docker attach $BUILD_NAME
 else
   docker network disconnect $NETWORK_NAME $BUILD_NAME
   docker stop $BUILD_NAME
