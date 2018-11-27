@@ -38,7 +38,7 @@ However, if you can't see other containers remember connect them, e.g.
 
 ```bash
 # start two containers in separated shells
-$ undock -p web 80:4000 -- npm start
+$ undock web -p 80:4000 -- npm start
 $ undock user -- npm start
 
 # create a shared network and connect containers
