@@ -49,6 +49,14 @@ if [[ ! -z "${BASH_REMATCH[4]:-}" ]]; then
   ARGV="${BASH_REMATCH[1]:-}"
 fi
 
+# extract --file
+[[ $ARGV =~ ^(.*)?-(-file|f)(=| )(.+)$ ]];
+
+if [[ ! -z "${BASH_REMATCH[4]:-}" ]]; then
+  DOCKER_FILE="${BASH_REMATCH[4]:-}"
+  ARGV="${BASH_REMATCH[1]:-}"
+fi
+
 # extract `name target project network`
 [[ $ARGV =~ ^([^ ]*)( ([^ ]*))?( ([^ ]*))?( ([^ ]*))?$ ]];
 
@@ -56,7 +64,7 @@ BUILD_NAME="${BASH_REMATCH[1]:-app}"
 BUILD_TARGET="${BASH_REMATCH[3]:-develop}"
 PROJECT_NAME="${BASH_REMATCH[5]:-$(basename $PWD)}"
 NETWORK_NAME="${PROJECT_NAME}_${BASH_REMATCH[7]:-default}"
-DOCKER_FILE="$HOME/.docker/Dockerfile"
+DOCKER_FILE="${DOCKER_FILE:-$HOME/.docker/Dockerfile}"
 
 HISTORY="-v $HOME/.bash_history:/home/dev/.bash_history"
 SOCKET="-v /var/run/docker.sock:/var/run/docker.sock"
