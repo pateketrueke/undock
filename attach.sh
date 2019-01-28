@@ -46,31 +46,31 @@ if [[ ! -z "${BASH_REMATCH:-}" ]]; then
 fi
 
 # extract --ports
-[[ $ARGV =~ ^(.*)?-(-ports|p)(=| )(.+)$ ]];
+[[ $ARGV =~ ^(.*)?-(-ports|p)(=| )([^ ]+) ]];
 
 if [[ ! -z "${BASH_REMATCH[4]:-}" ]]; then
-  PORTS="${BASH_REMATCH[4]:-}"
-  ARGV="${BASH_REMATCH[1]:-}"
+  PORTS="${BASH_REMATCH[4]}"
+  ARGV="${BASH_REMATCH[1]}"
 fi
 
 # extract --file
-[[ $ARGV =~ ^(.*)?-(-file|f)(=| )(.+)$ ]];
+[[ $ARGV =~ ^(.*)?-(-file|f)(=| )([^ ]+) ]];
 
 if [[ ! -z "${BASH_REMATCH[4]:-}" ]]; then
-  DOCKER_FILE="${BASH_REMATCH[4]:-}"
-  ARGV="${BASH_REMATCH[1]:-}"
+  DOCKER_FILE="${BASH_REMATCH[4]}"
+  ARGV="${BASH_REMATCH[1]}"
 fi
 
 # extract --cwd
-[[ $ARGV =~ ^(.*)?-(-cwd|c)(=| )(.+)$ ]];
+[[ $ARGV =~ ^(.*)?-(-cwd|c)(=| )([^ ]+) ]];
 
 if [[ ! -z "${BASH_REMATCH[4]:-}" ]]; then
-  WORKING_DIR="${BASH_REMATCH[4]:-}"
-  ARGV="${BASH_REMATCH[1]:-}"
+  WORKING_DIR="${BASH_REMATCH[4]}"
+  ARGV="${BASH_REMATCH[1]}"
 fi
 
 # extract `name target project network`
-[[ $ARGV =~ ^([^ ]*)( ([^ ]*))?( ([^ ]*))?( (.*))?$ ]];
+[[ $ARGV =~ ^([^ ]*)( ([^ ]*))?( ([^ ]*))?( ([^ ]*))? ]];
 
 BUILD_NAME="${BASH_REMATCH[1]:-app}"
 BUILD_TARGET="${BASH_REMATCH[3]:-develop}"
