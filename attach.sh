@@ -4,6 +4,7 @@ set -eu
 
 ARGV="$@"
 REBUILD="no"
+WORKING_DIR="$PWD"
 
 if [[ -z "$ARGV" ]] || [[ $ARGV =~ ^--help ]]; then
   echo
@@ -14,10 +15,13 @@ if [[ -z "$ARGV" ]] || [[ $ARGV =~ ^--help ]]; then
   echo "  undock test"
   echo "  undock web -p 3000,80:4000"
   echo "  undock user nodejs -- make run service=%"
+  echo "  undock test -f services/test/Dockerfile -c services/test/src -- env"
   echo
   echo "Options:"
+  echo "  -c, --cwd     Custom working directory  (default: $PWD)"
+  echo "  -f, --file    Custom filepath for Dockerfile  (default: ~/.docker/Dockerfile)"
   echo "  -p, --ports   Expose ports from attached container"
-  echo "  -b, --build   Build ~/.docker/Dockerfile before run"
+  echo "  -b, --build   Build given Dockerfile before run"
   echo
   echo "The % placeholder is replaced with the given service-name."
   exit 1
@@ -57,6 +61,14 @@ if [[ ! -z "${BASH_REMATCH[4]:-}" ]]; then
   ARGV="${BASH_REMATCH[1]:-}"
 fi
 
+# extract --cwd
+[[ $ARGV =~ ^(.*)?-(-cwd|c)(=| )(.+)$ ]];
+
+if [[ ! -z "${BASH_REMATCH[4]:-}" ]]; then
+  WORKING_DIR="${BASH_REMATCH[4]:-}"
+  ARGV="${BASH_REMATCH[1]:-}"
+fi
+
 # extract `name target project network`
 [[ $ARGV =~ ^([^ ]*)( ([^ ]*))?( ([^ ]*))?( ([^ ]*))?$ ]];
 
@@ -70,7 +82,7 @@ HISTORY="-v $HOME/.bash_history:/home/dev/.bash_history"
 SOCKET="-v /var/run/docker.sock:/var/run/docker.sock"
 GITCONFIG="-v $HOME/.gitconfig:/home/dev/.gitconfig"
 SSHDIR="-v $HOME/.ssh:/home/dev/.ssh"
-HOMEDIR="-v $PWD:/usr/src/dev"
+HOMEDIR="-v $WORKING_DIR:/usr/src/dev"
 NAME="--name $BUILD_NAME"
 
 EXPOSE="-P"
@@ -85,12 +97,12 @@ if [[ ! -z "${PORTS:-}" ]]; then
   done
 fi
 
-if [[ -f "$PWD/.env" ]]; then
-  ENV="--env-file $PWD/.env"
+if [[ -f "$WORKING_DIR/.env" ]]; then
+  ENV+=" --env-file $WORKING_DIR/.env"
 fi
 
 if [[ "$REBUILD" = "yes" ]]; then
-  docker build --target $BUILD_TARGET -t $PROJECT_NAME -f $DOCKER_FILE $PWD
+  docker build --target $BUILD_TARGET -t $PROJECT_NAME -f $DOCKER_FILE $WORKING_DIR
 fi
 
 if ! docker network ls | grep $NETWORK_NAME > /dev/null; then
