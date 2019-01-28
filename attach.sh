@@ -70,7 +70,7 @@ if [[ ! -z "${BASH_REMATCH[4]:-}" ]]; then
 fi
 
 # extract `name target project network`
-[[ $ARGV =~ ^([^ ]*)( ([^ ]*))?( ([^ ]*))?( ([^ ]*))?$ ]];
+[[ $ARGV =~ ^([^ ]*)( ([^ ]*))?( ([^ ]*))?( (.*))?$ ]];
 
 BUILD_NAME="${BASH_REMATCH[1]:-app}"
 BUILD_TARGET="${BASH_REMATCH[3]:-develop}"
@@ -98,7 +98,7 @@ if [[ ! -z "${PORTS:-}" ]]; then
 fi
 
 if [[ -f "$WORKING_DIR/.env" ]]; then
-  ENV+=" --env-file $WORKING_DIR/.env"
+  ENV="--env-file $WORKING_DIR/.env"
 fi
 
 if [[ "$REBUILD" = "yes" ]]; then
