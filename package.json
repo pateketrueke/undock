@@ -1,6 +1,6 @@
 {
   "name": "undock",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "bin": {
     "undock": "./attach.sh"
   },
