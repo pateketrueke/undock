@@ -103,6 +103,7 @@ fi
 
 if [[ "$REBUILD" = "yes" ]]; then
   docker build --target $BUILD_TARGET -t $PROJECT_NAME -f $DOCKER_FILE $WORKING_DIR
+  exit 0
 fi
 
 if ! docker network ls | grep $NETWORK_NAME > /dev/null; then
