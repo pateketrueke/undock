@@ -10,11 +10,11 @@ FROM backend as nodejs
 # setup environment
 FROM nodejs as develop
   RUN useradd -G staff,root dev
-  RUN mkdir -p /usr/src/dev /home/dev
-  RUN chown -R dev /usr/src/dev /home/dev
+  RUN mkdir -p /app /home/dev
+  RUN chown -R dev /app /home/dev
   RUN echo "dev ALL=NOPASSWD: ALL" >> /etc/sudoers
 
   # user, workdir, editor
   USER dev
-  WORKDIR /usr/src/dev
+  WORKDIR /app
   ENV EDITOR=/usr/bin/vim
