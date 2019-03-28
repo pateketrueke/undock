@@ -82,7 +82,7 @@ HISTORY="-v $HOME/.bash_history:/home/dev/.bash_history"
 SOCKET="-v /var/run/docker.sock:/var/run/docker.sock"
 GITCONFIG="-v $HOME/.gitconfig:/home/dev/.gitconfig"
 SSHDIR="-v $HOME/.ssh:/home/dev/.ssh"
-HOMEDIR="-v $WORKING_DIR:/usr/src/dev"
+HOMEDIR="-v $WORKING_DIR:/app"
 NAME="--name $BUILD_NAME"
 
 EXPOSE="-P"
