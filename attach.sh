@@ -102,7 +102,23 @@ if [[ -f "$WORKING_DIR/.env" ]]; then
 fi
 
 if [[ "$REBUILD" = "yes" ]]; then
-  docker build --target $BUILD_TARGET -t $PROJECT_NAME -f $DOCKER_FILE $WORKING_DIR
+  if [[ -f "$PWD/.dockerignore" ]]; then
+    cp "$PWD/.dockerignore" "$PWD/.dockerignore.bak"
+  else
+    touch "$PWD/.dockerignore"
+  fi
+
+  echo ".git" >> "$PWD/.dockerignore"
+  echo "node_modules" >> "$PWD/.dockerignore"
+
+  docker build --target $BUILD_TARGET -t $PROJECT_NAME -f $DOCKER_FILE $WORKING_DIR || true
+
+  if [[ -f "$PWD/.dockerignore.bak" ]]; then
+    rm "$PWD/.dockerignore"
+    mv "$PWD/.dockerignore.bak" "$PWD/.dockerignore"
+  else
+    rm "$PWD/.dockerignore"
+  fi
   exit 0
 fi
 

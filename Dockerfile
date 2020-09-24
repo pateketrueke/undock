@@ -3,7 +3,7 @@ FROM ubuntu as backend
 
 # development utilities
 FROM backend as nodejs
-  RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
+  RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
   RUN apt-get install -y nodejs httpie vim
   RUN npm i -g npm@latest
 
